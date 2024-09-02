@@ -20,17 +20,13 @@
    ```
 
 2. **Crear un archivo `requirements.txt` con las dependencias necesarias:**
-
-   Crea un archivo llamado `requirements.txt` y añade las siguientes líneas:
-
    ```
    pandas
    numpy
    matplotlib
    tensorflow
    ```
-
-   Luego, instala las dependencias ejecutando:
+    instala las dependencias ejecutando
 
    ```bash
    pip install -r requirements.txt
