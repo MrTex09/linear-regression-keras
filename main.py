@@ -1,31 +1,60 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Input
+import tensorflow as tf
+from keras.api.layers import Dense, Input
+from keras.api.models import Sequential
+from keras.api.optimizers import SGD
 
-data = pd.read_csv('altura_peso.csv')
-print(data.columns)
+def load_data(filename):
+    data = pd.read_csv(filename)
+    x = data['Altura'].values
+    y = data['Peso'].values
+    return x, y
 
-x = data['Altura'].values
-y = data['Peso'].values
-x = x.reshape(-1, 1)
+def build_model():
+    model = Sequential()
+    model.add(Dense(1, input_shape=(1,), activation="linear"))
+    optimizer = SGD(learning_rate=0.00004)
+    model.compile(optimizer=optimizer, loss='mse')
+    return model
 
-model = Sequential()
-model.add(Input(shape=(1,))) 
-model.add(Dense(1))
+def fit_model(model, x, y):
+    history = model.fit(x, y, epochs=10000, batch_size=len(x), verbose=0)
+    return history
 
-model.compile(optimizer='adam', loss='mean_squared_error')
+def plot_results(history, model, x, y):
+    plt.figure(figsize=(10, 6))
+    plt.plot(history.history['loss'])
+    plt.title('Error Cuadratico Medio vs Número de epocas')
+    plt.xlabel('Épocas')
+    plt.ylabel('Error Cuadratico medio (ECM)')
+    plt.grid()
+    plt.show()
+    plt.figure(figsize=(10, 6))
+    plt.scatter(x, y, label='datos originales')
+    
+    x_range = np.linspace(min(x), max(x), 100)
+    plt.plot(x_range, model.predict(x_range.reshape(-1, 1)), color='red', label='linea de regresion')    
+    plt.title('Altura vs Peso con linea de regresion')
+    plt.xlabel('Altura (m)')
+    plt.ylabel('Peso (kg)')
+    plt.legend()
+    plt.grid()
+    plt.show()
 
+def estimate_weight(model, height):
+    height_normalized = height / 100.0  
+    weight = model.predict(np.array([[height_normalized]]))
+    print(f'la predicción del peso para una persona con una altura de {height} cm es de {weight[0][0] * 100:.2f} kg')
 
-model.fit(x, y, epochs=100)
-predicciones = model.predict(x)
+def execute_program():
+    filename = 'altura_peso.csv'
+    x, y = load_data(filename) 
+    model = build_model()    
+    history = fit_model(model, x, y)    
+    plot_results(history, model, x, y)    
+    estimate_weight(model, 170)
 
-plt.scatter(x, y, color='blue', label='Datos originales')
-plt.plot(x, predicciones, color='red', label='Predicción')
-plt.xlabel('Altura')
-plt.ylabel('Peso')
-plt.title('Regresión Lineal - Altura vs Peso')
-plt.legend()
-plt.show()
+if __name__ == '__main__':
+    execute_program()

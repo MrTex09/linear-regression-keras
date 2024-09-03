@@ -11,7 +11,7 @@
 
 ## Instalación de Dependencias
 
-1. **Crear y activar un entorno virtual (opcional pero recomendado):**
+1. **Crear y activar un entorno virtual**
 
    ```bash
    python -m venv env
@@ -19,14 +19,7 @@
    source env/bin/activate # Linux/Mac
    ```
 
-2. **Crear un archivo `requirements.txt` con las dependencias necesarias:**
-   ```
-   pandas
-   numpy
-   matplotlib
-   tensorflow
-   ```
-    instala las dependencias ejecutando
+2. **instala las dependencias ejecutando**
 
    ```bash
    pip install -r requirements.txt
